@@ -8,14 +8,15 @@ using System.Threading.Tasks;
 namespace BasicConnectivity
 {
     //Region hanya untuk interaksi ke db, tidak untuk hal lain
-    internal class Region
+    internal class Region : Table<Region>
     {
         public int Id { get; set; }
         public string Name { get; set; }
 
         public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
 
-        public List<Region> GetAll()
+
+        public override List<Region> GetAll()
         {
             var regions = new List<Region>();
 
@@ -52,7 +53,7 @@ namespace BasicConnectivity
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Errod: {ex.Message}");
+                Console.WriteLine($"Error: {ex.Message}");
             }
             return new List<Region>();
         }
@@ -241,6 +242,11 @@ namespace BasicConnectivity
             {
                 return $"Error: {ex.Message}";
             }
+        }
+
+        public override void Print()
+        {
+            Console.WriteLine($"Id: {Id}, Name: {Name}");
         }
     }
 }

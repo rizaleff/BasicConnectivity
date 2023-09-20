@@ -23,330 +23,99 @@ namespace BasicConnectivity;
 */
 public class Program
 {
-    /*
-        Integrated Security - Windows Authentication
-        Di VS bisa liat database (Data Processing Saat install) - Sql Server Object Explorer
-     */
-    public static readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
-    //static SqlConnection connection;
 
-    private static void DbConnection()
+    private static void Menu()
     {
+        Console.WriteLine("==============================");
+        Console.WriteLine("1. Regions ");
+        Console.WriteLine("2. Countries ");
+        Console.WriteLine("3. Location");
+        Console.WriteLine("4. Department");
+        Console.WriteLine("5. Job");
+        Console.WriteLine("6. Job History");
+        Console.WriteLine("7. Employee");
+        Console.Write("Pilih Menu: ");
+        Console.ReadLine();
+    }
+
+    private static void SubMenu()
+    {
+        Console.WriteLine("==============================");
+        Console.WriteLine("1. Get All");
+        Console.WriteLine("2. Get By Id");
+        Console.WriteLine("3. Insert ");
+        Console.WriteLine("4. Update ");
+        Console.WriteLine("5. Delete ");
+    }
+    private static void showData<T>(T data) where T : Table<T>
+    {
+
+        var getAllData = data.GetAll();
+
+        if (getAllData.Count > 0)
+        {
+            foreach (var data1 in getAllData)
+            {
+                data1.Print();
+            }
+        }
+        else
+        {
+            Console.WriteLine("No data found");
+        }
 
     }
     private static void Main(String[] args)
     {
-        /*
-         Yang sering terjadi tidak error tpi progrm gk jalan, biasanya ada typo di connectionstring
-         */
 
-        //GetAllRegions();
-        Insert(" ");
-        InsertRegion("East Europe asjdkajskdjsakjdkajskdjskdjkajasdjaskjdhjahkhjhkjhkhkjhjkhkhkhjhjhkhkhkjhhkjhkjhkjhkj");
-        //GetAllRegions();
-        /*      GetRegionById(12);
-              UpdateRegion(12, "East Asia");
-              GetRegionById(12);
-              GetAllRegions();
-              DeleteRegion(9);*/
-        //InsertRegion("Balkan");
-        //Delete(10);
-        GetAllRegions();
+        showData(new Employee());
+/*        var region = new Region();
+        //region.Delete(24);
+        region.Update(21, "Fake Region");
+        var getAllRegion = region.GetAll();
 
-    }
-    //GET ALL: regions
-    public static void GetAllRegions()
-    {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
-
-        command.Connection = connection;
-        command.CommandText = "SELECT * FROM tbl_regions";
-
-        try
+        if (getAllRegion.Count > 0)
         {
-            connection.Open();
-
-            using var reader = command.ExecuteReader();
-
-            if (reader.HasRows)
-                while (reader.Read())
-                {
-                    Console.WriteLine($"Id: {reader.GetInt32(0)}");
-                    Console.WriteLine($"Name: {reader.GetString(1)}");
-                }
-            else
-                Console.WriteLine("No Rows Found");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Errod: {ex.Message}");
-        }
-    }
-    //GET BY ID: regions
-    public static void GetRegionById(int id)
-    {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
-
-        command.Connection = connection;
-        command.CommandText = "SELECT * FROM tbl_regions WHERE id = @id";
-
-        try
-        {
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pId);
-
-            connection.Open();
-            using var reader = command.ExecuteReader();
-
-            if (reader.HasRows)
-                while (reader.Read())
-                {
-                    Console.WriteLine($"Id: {reader.GetInt32(0)}");
-                    Console.WriteLine($"Name: {reader.GetString(1)}");
-                }
-            else
-                Console.WriteLine("No Rows Found");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-    }
-
-    //INSERT: regions
-    public static void InsertRegion(string name)
-    {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
-
-        command.Connection = connection;
-        command.CommandText = "INSERT INTO tbl_regions VALUES (@name)";
-
-        try
-        {
-            var pName = new SqlParameter();
-            pName.ParameterName = "@name";
-            pName.Value = name;
-            pName.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pName);
-
-            connection.Open();
-            using var transaction = connection.BeginTransaction();
-
-            try
+            foreach (var region1 in getAllRegion)
             {
-                command.Transaction = transaction;
-
-                var result = command.ExecuteNonQuery();
-
-                transaction.Commit();
-                connection.Close();
-
-                switch (result)
-                {
-                    case >= 1:
-                        Console.WriteLine("Insert Success");
-                        break;
-                    default:
-                        Console.WriteLine("Insert Failed");
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                Console.WriteLine($"Error Transaction: {ex.Message}");
+                Console.WriteLine($"Id: {region1.Id}, Name: {region1.Name}");
             }
         }
-        catch (Exception ex)
+        else
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine("No data found");
         }
-    }
-    //UPDATE: regions
-    public static void UpdateRegion(int id, string name)
-    {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
-
-        command.Connection = connection;
-        command.CommandText = "UPDATE tbl_regions SET name = @name WHERE id = @id";
-
-        try
+*/
+       /* var insertResult = region.Insert("Region 5");
+        int.TryParse(insertResult, out int result);
+        if (result > 0)
         {
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pId);
-
-            var pName = new SqlParameter();
-            pName.ParameterName = "@name";
-            pName.Value = name;
-            pName.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pName);
-
-            connection.Open();
-            using var transaction = connection.BeginTransaction();
-
-            try
-            {
-                command.Transaction = transaction;
-                /*
-                    ExecuteNonQuery Klo di transaction berperan sbg staging (Klo di versioning)
-                    Buat ngecek apa ada masalah atau tidak 
-                    RollBack berperan ketika di execue ketika ada
-
-                 */
-                var result = command.ExecuteNonQuery();
-
-                transaction.Commit();
-                connection.Close();
-
-                switch (result)
-                {
-                    case >= 1:
-                        Console.WriteLine("Update Success");
-                        break;
-                    default:
-                        Console.WriteLine("Update Failed");
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                Console.WriteLine($"Error Transaction: {ex.Message}");
-            }
-
-
+            Console.WriteLine("Insert Success");
         }
-        catch (Exception ex)
+        else
         {
-            Console.WriteLine($"Error: {ex.Message}");
+            Console.WriteLine("Insert Failed");
+            Console.WriteLine(insertResult);
         }
-    }
 
-    //DELETE: regions
-    public static void DeleteRegion(int id)
-    {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
 
-        command.Connection = connection;
-        command.CommandText = "DELETE FROM tbl_regions WHERE id = @id";
+        getAllRegion = region.GetAll();
 
-        try
+        if (getAllRegion.Count > 0)
         {
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pId);
-
-            connection.Open();
-
-            using var transaction = connection.BeginTransaction();
-
-            try
+            foreach (var region1 in getAllRegion)
             {
-                command.Transaction = transaction;
-                var result = command.ExecuteNonQuery();
-
-                transaction.Commit();
-                connection.Close();
-
-                switch (result)
-                {
-                    case >= 1:
-                        Console.WriteLine("Delete Success");
-                        break;
-                    default:
-                        Console.WriteLine("Delete Failed");
-                        break;
-                }
-            }
-            catch (Exception ex)
-            {
-                transaction.Rollback();
-                Console.WriteLine($"Error Transaction: {ex.Message}");
+                Console.WriteLine($"Id: {region1.Id}, Name: {region1.Name}");
             }
         }
-        catch (Exception ex)
+        else
         {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
+            Console.WriteLine("No data found");
+        }*/
+
     }
 
-    public static void Delete(int id)
-    {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
-        command.Connection = connection;
-        command.CommandText = "DELETE FROM tbl_regions WHERE id = @id";
-
-        try
-        {
-            var pId = new SqlParameter();
-            pId.ParameterName = "@id";
-            pId.Value = id;
-            pId.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pId);
-
-            connection.Open();
-            int rowDeleted = command.ExecuteNonQuery();
-            if (rowDeleted > 0)
-                Console.WriteLine("Row Deleted");
-            else
-                Console.WriteLine("Delete Failed");
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-    }
-
-    public static void Insert(string name)
-    {
-        using var connection = new SqlConnection(connectionString);
-        using var command = new SqlCommand();
-        command.Connection = connection;
-        command.CommandText = "INSERT INTO tbl_regions VALUES (@name)";
-
-        try
-        {
-            var pName = new SqlParameter();
-            pName.ParameterName = "@name";
-            pName.Value = name;
-            pName.SqlDbType = SqlDbType.VarChar;
-            command.Parameters.Add(pName);
-
-            connection.Open();
-
-            var result = command.ExecuteNonQuery();
-            connection.Close();
-
-            switch (result)
-            {
-                case >= 1:
-                    Console.WriteLine("Insert Success");
-                    break;
-                default:
-                    Console.WriteLine("Insert Failed");
-                    break;
-            }
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Error: {ex.Message}");
-        }
-    }
-
+/*    //Insert Country
     public static void InsertCountry(int id, string name, int region_id)
     {
         using var connection = new SqlConnection();
@@ -382,4 +151,35 @@ public class Program
             Console.WriteLine($"Error: {ex.Message}");
         }
     }
+
+    //get country
+    public static void GetAllCountries()
+    {
+        using var connection = new SqlConnection(connectionString);
+        using var command = new SqlCommand();
+
+        command.Connection = connection;
+        command.CommandText = "SELECT * FROM tbl_countries";
+
+        try
+        {
+            connection.Open();
+
+            using var reader = command.ExecuteReader();
+
+            if (reader.HasRows)
+                while (reader.Read())
+                {
+                    Console.WriteLine($"Id: {reader.GetInt32(0)}");
+                    Console.WriteLine($"Name: {reader.GetString(1)}");
+                    Console.WriteLine($"Id Region: {reader.GetString(2)}");
+                }
+            else
+                Console.WriteLine("No Rows Found");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Errod: {ex.Message}");
+        }
+    }*/
 }
