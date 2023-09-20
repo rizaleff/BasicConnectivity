@@ -15,9 +15,12 @@ namespace BasicConnectivity
         public int RegionId { get; set; }
 
 
-        private readonly string connectionString =
-        "Data Source=CAMOUFLY;Integrated Security=True;Database=db_hr_dts;Connect Timeout=30;";
+        public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
 
+        public override string ToString()
+        {
+            return $"{Id} - {Name} - {RegionId}";
+        }
         public List<Country> GetAll()
         {
             var countries = new List<Country>();

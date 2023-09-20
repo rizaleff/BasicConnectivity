@@ -5,6 +5,8 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Globalization;
 
 namespace BasicConnectivity
 {
@@ -12,19 +14,23 @@ namespace BasicConnectivity
     {
         public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
 
-        public int? Id { get; set; }
-        public string? FirstName { get; set; }
-        public string? LastName { get; set; }
-        public string? Email { get; set; }
-        public string? PhoneNumber { get; set; }
-        public DateTime? HireDate { get; set; }
-        public int? JobId { get; set; }
-        public double? Salary { get; set; }
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public DateTime HireDate { get; set; }
+        public int JobId { get; set; }
+        public double Salary { get; set; }
         public double? ComissionPct { get; set; }
 
-        public int? DepartmentId { get; set; }
+        public int DepartmentId { get; set; }
         public int? ManagerId { get; set; }
-
+        
+        public override string ToString()
+        {
+            return $"{Id} - {FirstName} - {LastName} - {Email} - {PhoneNumber} - {HireDate.ToString("dd/MM/yyyy")} - {JobId} - {Salary} - {ComissionPct} - {DepartmentId} - {ManagerId}";
+        }
         public override List<Employee> GetAll()
         {
             var employees = new List<Employee>();
@@ -45,8 +51,6 @@ namespace BasicConnectivity
                 {
                     while (reader.Read())
                     {
-                        Console.WriteLine(reader.GetValue(10));
-
 
                         employees.Add(new Employee
                         {
@@ -60,8 +64,8 @@ namespace BasicConnectivity
                             Salary = reader.GetDouble(7),
                             ComissionPct = reader.GetDouble(8),
                             DepartmentId = reader.GetInt32(9),
-                            //ManagerId = reader.GetInt32(10)
-                        });
+                            ManagerId = reader.IsDBNull(10) ? 0 : (int?) reader.GetInt32(10)
+                        }); 
                     }
                     reader.Close();
                     connection.Close();

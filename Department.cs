@@ -17,6 +17,11 @@ namespace BasicConnectivity
         public int ManagerId {  get; set; }
         public int LocationId { get; set; }
 
+
+        public override string ToString()
+        {
+            return $"{Id} - {Name} - {ManagerId} - {LocationId}";
+        }
         public List<Department> GetAll()
         {
             var departments = new List<Department>();

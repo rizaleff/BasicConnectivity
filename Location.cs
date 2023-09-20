@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace BasicConnectivity
 {
@@ -19,6 +20,10 @@ namespace BasicConnectivity
         public string City { get; set; }
         public int CountryId { get; set; }
 
+        public override string ToString()
+        {
+            return $"{Id} - {StreetAddress} - {PostalCode} - {StateProvince} - {City} - {CountryId}";
+        }
         public List<Location> GetAll()
         {
             var locations = new List<Location>();

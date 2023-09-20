@@ -68,50 +68,114 @@ public class Program
     private static void Main(String[] args)
     {
 
-        showData(new Employee());
-/*        var region = new Region();
-        //region.Delete(24);
-        region.Update(21, "Fake Region");
-        var getAllRegion = region.GetAll();
 
-        if (getAllRegion.Count > 0)
+        var choice = true;
+        while (choice)
         {
-            foreach (var region1 in getAllRegion)
-            {
-                Console.WriteLine($"Id: {region1.Id}, Name: {region1.Name}");
-            }
+            Console.WriteLine("1. List all regions");
+            Console.WriteLine("2. List all countries");
+            Console.WriteLine("3. List all locations");
+            Console.WriteLine("4. List all Departments");
+            Console.WriteLine("5. List all Job");
+            Console.WriteLine("6. List all Job History");
+            Console.WriteLine("7. List all Employee");
+            Console.WriteLine("8. Exit");
+            Console.Write("Enter your choice: ");
+            var input = Console.ReadLine();
+            choice = Menu(input);
         }
-        else
+    }
+    public static bool Menu(string input)
+    {
+        switch (input)
         {
-            Console.WriteLine("No data found");
+            case "1":
+                var region = new Region();
+                var regions = region.GetAll();
+                GeneralMenu.List(regions, "regions");
+                break;
+            case "2":
+                var country = new Country();
+                var countries = country.GetAll();
+                GeneralMenu.List(countries, "countries");
+                break;
+            case "3":
+                var location = new Location();
+                var locations = location.GetAll();
+                GeneralMenu.List(locations, "locations");
+                break;
+            case "4":
+                var department = new Department();
+                var departments = department.GetAll();
+                GeneralMenu.List(departments, "departments");
+                break;
+            case "5":
+                var job= new Job();
+                var jobs = job.GetAll();
+                GeneralMenu.List(jobs, "jobs");
+                break;
+            case "6":
+                var jobHistory = new Location();
+                var jobHistories = jobHistory.GetAll();
+                GeneralMenu.List(jobHistories, "jobHistories");
+                break;
+            case "7":
+                var employee = new Employee();
+                var employees = employee.GetAll();
+                GeneralMenu.List(employees, "employees");
+                break;
+            case "10":
+                return false;
+
+            default:
+                Console.WriteLine("Invalid choice");
+                break;
         }
-*/
-       /* var insertResult = region.Insert("Region 5");
-        int.TryParse(insertResult, out int result);
-        if (result > 0)
-        {
-            Console.WriteLine("Insert Success");
-        }
-        else
-        {
-            Console.WriteLine("Insert Failed");
-            Console.WriteLine(insertResult);
-        }
+        return true;
+        //showData(new Employee());
+        /*        var region = new Region();
+                //region.Delete(24);
+                region.Update(21, "Fake Region");
+                var getAllRegion = region.GetAll();
+
+                if (getAllRegion.Count > 0)
+                {
+                    foreach (var region1 in getAllRegion)
+                    {
+                        Console.WriteLine($"Id: {region1.Id}, Name: {region1.Name}");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("No data found");
+                }
+        */
+        /* var insertResult = region.Insert("Region 5");
+         int.TryParse(insertResult, out int result);
+         if (result > 0)
+         {
+             Console.WriteLine("Insert Success");
+         }
+         else
+         {
+             Console.WriteLine("Insert Failed");
+             Console.WriteLine(insertResult);
+         }
 
 
-        getAllRegion = region.GetAll();
+         getAllRegion = region.GetAll();
 
-        if (getAllRegion.Count > 0)
-        {
-            foreach (var region1 in getAllRegion)
-            {
-                Console.WriteLine($"Id: {region1.Id}, Name: {region1.Name}");
-            }
-        }
-        else
-        {
-            Console.WriteLine("No data found");
-        }*/
+         if (getAllRegion.Count > 0)
+         {
+             foreach (var region1 in getAllRegion)
+             {
+                 Console.WriteLine($"Id: {region1.Id}, Name: {region1.Name}");
+             }
+         }
+         else
+         {
+             Console.WriteLine("No data found");
+         }*/
 
     }
 

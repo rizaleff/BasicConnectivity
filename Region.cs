@@ -15,6 +15,10 @@ namespace BasicConnectivity
 
         public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
 
+        public override string ToString()
+        {
+            return $"{Id} - {Name}";
+        }
 
         public override List<Region> GetAll()
         {

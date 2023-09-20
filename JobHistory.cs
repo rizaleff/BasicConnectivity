@@ -18,6 +18,10 @@ namespace BasicConnectivity
         public int JobID { get; set; }
         public int DepartmentId { get; set; }
 
+        public override string ToString()
+        {
+            return $"{EmployeeID} - {StartDate} - {EndDate} - {JobID} - {DepartmentId}";
+        }
         public List<JobHistory> GetAll()
         {
             var jobHistories = new List<JobHistory>();

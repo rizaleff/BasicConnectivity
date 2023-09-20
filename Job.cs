@@ -5,6 +5,7 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace BasicConnectivity
 {
@@ -17,6 +18,11 @@ namespace BasicConnectivity
         public int MinSalary { get; set; }
         public int MaxSalary { get; set; }
 
+
+        public override string ToString()
+        {
+            return $"{Id} - {Title} - {MinSalary} - {MaxSalary}";
+        }
         public override List<Job> GetAll()
         {
             var jobs = new List<Job>();
