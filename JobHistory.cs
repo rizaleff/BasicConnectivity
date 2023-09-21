@@ -10,8 +10,6 @@ namespace BasicConnectivity
 {
     internal class JobHistory
     {
-        public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
-
         public int EmployeeID { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
@@ -26,8 +24,8 @@ namespace BasicConnectivity
         {
             var jobHistories = new List<JobHistory>();
 
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_job_histories";
@@ -71,8 +69,8 @@ namespace BasicConnectivity
         public JobHistory GetById(int id)
         {
             JobHistory jobHistory = new JobHistory();
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_job_histories WHERE id = @id";
@@ -115,8 +113,8 @@ namespace BasicConnectivity
 
         public string Insert(int employeeId, DateTime startDate, DateTime endDate, int jobId, int departmentId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "INSERT INTO tbl_job_histories VALUES (@employee_id, @start_date, @end_date, @job_id, @department_id)";
@@ -158,8 +156,8 @@ namespace BasicConnectivity
 
         public string Update(int employeeId, DateTime startDate, DateTime endDate, int jobId, int departmentId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "UPDATE tbl_job_histories SET @end_date, @job_id, @department_id WHERE employee_id=@employee_id, start_date=@start_date";
@@ -201,8 +199,8 @@ namespace BasicConnectivity
 
         public string Delete(int id)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "DELETE FROM tbl_job_histories WHERE id = @id";

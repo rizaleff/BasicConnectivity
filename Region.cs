@@ -8,24 +8,22 @@ using System.Threading.Tasks;
 namespace BasicConnectivity
 {
     //Region hanya untuk interaksi ke db, tidak untuk hal lain
-    internal class Region : Table<Region>
+    internal class Region
     {
         public int Id { get; set; }
         public string Name { get; set; }
-
-        public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
 
         public override string ToString()
         {
             return $"{Id} - {Name}";
         }
 
-        public override List<Region> GetAll()
+        public List<Region> GetAll()
         {
             var regions = new List<Region>();
 
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_regions";
@@ -66,8 +64,8 @@ namespace BasicConnectivity
         public Region GetById(int id)
         {
             Region region = new Region();
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_regions WHERE id = @id";
@@ -108,8 +106,8 @@ namespace BasicConnectivity
         //INSERT: regions
         public  string Insert(string name)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "INSERT INTO tbl_regions VALUES (@name)";
@@ -151,8 +149,8 @@ namespace BasicConnectivity
         //UPDATE: regions
         public string Update(int id, string name)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "UPDATE tbl_regions SET name = @name WHERE id = @id";
@@ -208,8 +206,8 @@ namespace BasicConnectivity
         //DELETE: regions
         public  string Delete(int id)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "DELETE FROM tbl_regions WHERE id = @id";
@@ -246,11 +244,6 @@ namespace BasicConnectivity
             {
                 return $"Error: {ex.Message}";
             }
-        }
-
-        public override void Print()
-        {
-            Console.WriteLine($"Id: {Id}, Name: {Name}");
         }
     }
 }

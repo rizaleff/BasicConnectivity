@@ -10,8 +10,6 @@ namespace BasicConnectivity
 {
     internal class Department
     {
-        public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
-
         public int Id { get; set; }
         public string Name { get; set; }    
         public int ManagerId {  get; set; }
@@ -26,8 +24,8 @@ namespace BasicConnectivity
         {
             var departments = new List<Department>();
 
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_departments";
@@ -70,8 +68,8 @@ namespace BasicConnectivity
         public Department GetById(int id)
         {
             Department department = new Department();
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_departments WHERE id = @id";
@@ -113,8 +111,8 @@ namespace BasicConnectivity
 
         public string Insert(int id, string name, int managerId, int locationId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "INSERT INTO tbl_departments VALUES (@id, @name, @manager_id)";
@@ -154,8 +152,8 @@ namespace BasicConnectivity
 
         public string Update(int id, string name, int managerId, int locationId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "UPDATE tbl_departments SET name = @name, manager_id = @manager_id, location_id=@location_id WHERE id = @id";
@@ -196,8 +194,8 @@ namespace BasicConnectivity
 
         public string Delete(int id)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "DELETE FROM tbl_departments WHERE id = @id";

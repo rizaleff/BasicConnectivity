@@ -11,8 +11,6 @@ namespace BasicConnectivity
 {
     internal class Location
     {
-        public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
-
         public int Id { get; set; }
         public string StreetAddress { get; set; }
         public string PostalCode { get; set; }
@@ -28,8 +26,8 @@ namespace BasicConnectivity
         {
             var locations = new List<Location>();
 
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_locations";
@@ -74,8 +72,8 @@ namespace BasicConnectivity
         public Location GetById(int id)
         {
             Location location = new Location();
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_locations WHERE id = @id";
@@ -119,8 +117,8 @@ namespace BasicConnectivity
 
         public string Insert(int id, string streetAddress, string postalCode, string stateProvince, string city, int countryId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "INSERT INTO tbl_locations VALUES (@id, @street_address, @postal_code, @state_province, @city, @country_id)";
@@ -164,8 +162,8 @@ namespace BasicConnectivity
 
         public string Update(int id, string streetAddress, string postalCode, string stateProvince, string city, int countryId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "UPDATE tbl_locations SET id=@id, street_address=@street_address, postal_code=@postal_code, state_province=@state_province, city=@city, country_id=@country_id WHERE id = @id";
@@ -208,8 +206,8 @@ namespace BasicConnectivity
 
         public string Delete(int id)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "DELETE FROM tbl_locations WHERE id = @id";

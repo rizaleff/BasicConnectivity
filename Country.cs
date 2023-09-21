@@ -14,9 +14,6 @@ namespace BasicConnectivity
         public string Name { get; set; }
         public int RegionId { get; set; }
 
-
-        public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
-
         public override string ToString()
         {
             return $"{Id} - {Name} - {RegionId}";
@@ -25,8 +22,8 @@ namespace BasicConnectivity
         {
             var countries = new List<Country>();
 
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_countries";
@@ -68,8 +65,8 @@ namespace BasicConnectivity
         public Country GetById(int id)
         {
             Country country = new Country();
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_countries WHERE id = @id";
@@ -110,8 +107,8 @@ namespace BasicConnectivity
 
         public string Insert(int id, string name, int regionId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "INSERT INTO tbl_countries VALUES (@id, @name, @region_id)";
@@ -150,8 +147,8 @@ namespace BasicConnectivity
 
         public string Update(int id, string name, int regionId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "UPDATE tbl_countries SET name = @name, region_id = @regionId WHERE id = @id";
@@ -191,8 +188,8 @@ namespace BasicConnectivity
 
         public string Delete(int id)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "DELETE FROM tbl_countries WHERE id = @id";

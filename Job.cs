@@ -9,10 +9,8 @@ using System.Xml.Linq;
 
 namespace BasicConnectivity
 {
-    internal class Job : Table<Job>
+    internal class Job
     {
-        public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
-
         public int Id { get; set; }
         public string Title { get; set; }
         public int MinSalary { get; set; }
@@ -23,12 +21,12 @@ namespace BasicConnectivity
         {
             return $"{Id} - {Title} - {MinSalary} - {MaxSalary}";
         }
-        public override List<Job> GetAll()
+        public List<Job> GetAll()
         {
             var jobs = new List<Job>();
 
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_jobs";
@@ -71,8 +69,8 @@ namespace BasicConnectivity
         public Job GetById(int id)
         {
             Job job = new Job();
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_jobs WHERE id = @id";
@@ -114,8 +112,8 @@ namespace BasicConnectivity
 
         public string Insert(int id, string title, int minSalary, int maxSalary)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "INSERT INTO tbl_jobs VALUES (@id, @title, @min_salary, @max_salary)";
@@ -156,8 +154,8 @@ namespace BasicConnectivity
 
         public string Update(int id, string title, int minSalary, int maxSalary)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "UPDATE tbl_jobs SET id=@id, title=@title, min_salary=@min_salary, max_salary=@max_salary WHERE id = @id";
@@ -198,8 +196,8 @@ namespace BasicConnectivity
 
         public string Delete(int id)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "DELETE FROM tbl_jobs WHERE id = @id";
@@ -238,11 +236,6 @@ namespace BasicConnectivity
             }
         }
 
-        public override void Print()
-        {
-            Console.WriteLine($"Job Name : {Title}");
-
-        }
 
 
     }

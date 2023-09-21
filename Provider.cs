@@ -9,7 +9,7 @@ namespace BasicConnectivity
 {
     internal class Provider
     {
-        private static readonly string connectionString = "Data Source=CAMOUFLY;Integrated Security=True;Database=db_hr_dts;Connect Timeout=30;";
+        private static readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
 
         public static SqlConnection GetConnection()
         {

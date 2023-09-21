@@ -10,10 +10,8 @@ using System.Globalization;
 
 namespace BasicConnectivity
 {
-    internal class Employee : Table<Employee>
+    internal class Employee
     {
-        public readonly string connectionString = "Data Source=DESKTOP-2A0I62H; Database=db_hr; Connect Timeout=; Integrated Security=True";
-
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
@@ -31,12 +29,12 @@ namespace BasicConnectivity
         {
             return $"{Id} - {FirstName} - {LastName} - {Email} - {PhoneNumber} - {HireDate.ToString("dd/MM/yyyy")} - {JobId} - {Salary} - {ComissionPct} - {DepartmentId} - {ManagerId}";
         }
-        public override List<Employee> GetAll()
+        public List<Employee> GetAll()
         {
             var employees = new List<Employee>();
 
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_employees";
@@ -87,8 +85,8 @@ namespace BasicConnectivity
         public Employee GetById(int id)
         {
             Employee employee = new Employee();
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "SELECT * FROM tbl_employees WHERE id = @id";
@@ -137,8 +135,8 @@ namespace BasicConnectivity
 
         public string Insert(int id, string firstName, string lastName, string email, string phoneNumber, DateTime hireDate, int jobId, float salary, float comissionPct, int departmentId, int managerId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "INSERT INTO tbl_employees VALUES (@id, @first_name, @last_name, @email, @phone_number, @hire_date, @job_id, @salary, @comission_pct, @department_id, @manager_id)";
@@ -184,8 +182,8 @@ namespace BasicConnectivity
 
         public string Update(int id, string firstName, string lastName, string email, string phoneNumber, DateTime hireDate, int jobId, float salary, float comissionPct, int departmentId, int managerId)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "UPDATE tbl_employees SET first_name = @first_name, last_name = @last_name, email = @email, phone_number = @phone_number, hire_date = @hire_date, job_id = @job_id, salary = @salary, comission_pct = @comission_pct, department_id = @department_id, manager_id = @manager_id,  WHERE id = @id";
@@ -233,8 +231,8 @@ namespace BasicConnectivity
 
         public string Delete(int id)
         {
-            using var connection = new SqlConnection(connectionString);
-            using var command = new SqlCommand();
+            using var connection = Provider.GetConnection();
+            using var command = Provider.GetCommand();
 
             command.Connection = connection;
             command.CommandText = "DELETE FROM tbl_employees WHERE id = @id";
@@ -271,11 +269,6 @@ namespace BasicConnectivity
             {
                 return $"Error: {ex.Message}";
             }
-        }
-
-        public override void Print()
-        {
-            Console.WriteLine($"Name: {FirstName}");
         }
     }
 }
