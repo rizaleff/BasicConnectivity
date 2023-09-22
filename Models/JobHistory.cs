@@ -1,32 +1,34 @@
-﻿using System.Data.SqlClient;
-using System.Data;
+﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BasicConnectivity
+namespace BasicConnectivity.Model
 {
-    //Region hanya untuk interaksi ke db, tidak untuk hal lain
-    internal class Region
+    public class JobHistory
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
+        public int EmployeeID { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public int JobID { get; set; }
+        public int DepartmentId { get; set; }
 
         public override string ToString()
         {
-            return $"{Id} - {Name}";
+            return $"{EmployeeID} - {StartDate} - {EndDate} - {JobID} - {DepartmentId}";
         }
-
-        public List<Region> GetAll()
+        public List<JobHistory> GetAll()
         {
-            var regions = new List<Region>();
+            var jobHistories = new List<JobHistory>();
 
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM tbl_regions";
+            command.CommandText = "SELECT * FROM tbl_job_histories";
 
             try
             {
@@ -36,39 +38,42 @@ namespace BasicConnectivity
 
                 if (reader.HasRows)
                 {
-
                     while (reader.Read())
                     {
-                        regions.Add(new Region
+                        jobHistories.Add(new JobHistory
                         {
-                            Id = reader.GetInt32(0),
-                            Name = reader.GetString(1)
-                        });
+                            EmployeeID = reader.GetInt32(0),
+                            StartDate = reader.GetDateTime(1),
+                            EndDate = reader.GetDateTime(2),
+                            JobID = reader.GetInt32(3),
+                            DepartmentId = reader.GetInt32(4),
+                        }); ;
                     }
                     reader.Close();
                     connection.Close();
-                    return regions;
+
+                    return jobHistories;
                 }
                 reader.Close();
                 connection.Close();
-                return new List<Region>();
+
+                return new List<JobHistory>();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-            return new List<Region>();
-        }
-        //GET BY ID: regions
 
-        public Region GetById(int id)
+            return new List<JobHistory>();
+        }
+        public JobHistory GetById(int id)
         {
-            Region region = new Region();
+            JobHistory jobHistory = new JobHistory();
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM tbl_regions WHERE id = @id";
+            command.CommandText = "SELECT * FROM tbl_job_histories WHERE id = @id";
 
             try
             {
@@ -85,40 +90,43 @@ namespace BasicConnectivity
                 {
                     while (reader.Read())
                     {
-                        region.Id = reader.GetInt32(0);
-                        region.Name = reader.GetString(1);
+                        jobHistory.EmployeeID = reader.GetInt32(0);
+                        jobHistory.StartDate = reader.GetDateTime(1);
+                        jobHistory.EndDate = reader.GetDateTime(2);
+                        jobHistory.JobID = reader.GetInt32(3);
+                        jobHistory.DepartmentId = reader.GetInt32(4);
                     }
                     reader.Close();
                     connection.Close();
-                    return region;
+                    return jobHistory;
                 }
                 reader.Close();
                 connection.Close();
-                return new Region();
+                return new JobHistory();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-            return new Region();
+            return new JobHistory();
         }
 
-        //INSERT: regions
-        public  string Insert(string name)
+        public string Insert(int employeeId, DateTime startDate, DateTime endDate, int jobId, int departmentId)
         {
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "INSERT INTO tbl_regions VALUES (@name)";
+            command.CommandText = "INSERT INTO tbl_job_histories VALUES (@employee_id, @start_date, @end_date, @job_id, @department_id)";
 
             try
             {
-                var pName = new SqlParameter();
-                pName.ParameterName = "@name";
-                pName.Value = name;
-                pName.SqlDbType = SqlDbType.VarChar;
-                command.Parameters.Add(pName);
+                command.Parameters.Add(new SqlParameter("@employee_id", employeeId));
+                command.Parameters.Add(new SqlParameter("@start_date", startDate));
+                command.Parameters.Add(new SqlParameter("@end_date", endDate));
+                command.Parameters.Add(new SqlParameter("@job_id", jobId));
+                command.Parameters.Add(new SqlParameter("@department_id", departmentId));
+
 
                 connection.Open();
                 using var transaction = connection.BeginTransaction();
@@ -138,7 +146,6 @@ namespace BasicConnectivity
                 {
                     transaction.Rollback();
                     return $"Error Transaction: {ex.Message}";
-                    //Message bisa di throw di log
                 }
             }
             catch (Exception ex)
@@ -146,28 +153,22 @@ namespace BasicConnectivity
                 return $"Error: {ex.Message}";
             }
         }
-        //UPDATE: regions
-        public string Update(int id, string name)
+
+        public string Update(int employeeId, DateTime startDate, DateTime endDate, int jobId, int departmentId)
         {
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "UPDATE tbl_regions SET name = @name WHERE id = @id";
+            command.CommandText = "UPDATE tbl_job_histories SET @end_date, @job_id, @department_id WHERE employee_id=@employee_id, start_date=@start_date";
 
             try
             {
-                var pId = new SqlParameter();
-                pId.ParameterName = "@id";
-                pId.Value = id;
-                pId.SqlDbType = SqlDbType.VarChar;
-                command.Parameters.Add(pId);
-
-                var pName = new SqlParameter();
-                pName.ParameterName = "@name";
-                pName.Value = name;
-                pName.SqlDbType = SqlDbType.VarChar;
-                command.Parameters.Add(pName);
+                command.Parameters.Add(new SqlParameter("@employee_id", employeeId));
+                command.Parameters.Add(new SqlParameter("@start_date", startDate));
+                command.Parameters.Add(new SqlParameter("@end_date", endDate));
+                command.Parameters.Add(new SqlParameter("@job_id", jobId));
+                command.Parameters.Add(new SqlParameter("@department_id", departmentId));
 
                 connection.Open();
                 using var transaction = connection.BeginTransaction();
@@ -175,14 +176,9 @@ namespace BasicConnectivity
                 try
                 {
                     command.Transaction = transaction;
-                    /*
-                        ExecuteNonQuery Klo di transaction berperan sbg staging (Klo di versioning)
-                        Buat ngecek apa ada masalah atau tidak 
-                        RollBack berperan ketika di execue ketika ada
 
-                     */
                     var result = command.ExecuteNonQuery();
-                    
+
                     transaction.Commit();
                     connection.Close();
 
@@ -194,8 +190,6 @@ namespace BasicConnectivity
                     transaction.Rollback();
                     return $"Error Transaction: {ex.Message}";
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -203,14 +197,13 @@ namespace BasicConnectivity
             }
         }
 
-        //DELETE: regions
-        public  string Delete(int id)
+        public string Delete(int id)
         {
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "DELETE FROM tbl_regions WHERE id = @id";
+            command.CommandText = "DELETE FROM tbl_job_histories WHERE id = @id";
 
             try
             {
@@ -232,7 +225,7 @@ namespace BasicConnectivity
                     transaction.Commit();
                     connection.Close();
 
-                    return result.ToString() ;
+                    return result.ToString();
                 }
                 catch (Exception ex)
                 {

@@ -1,19 +1,23 @@
 ﻿using System.Data;
 using System.Data.SqlClient;
 using System.Xml.Linq;
+using BasicConnectivity.Controllers;
+using BasicConnectivity.Model;
+using BasicConnectivity.ViewModel;
+using BasicConnectivity.Views;
 
 namespace BasicConnectivity;
 
 public class Program
 {
-    private static void Main(String[] args)
+    private static void Main(string[] args)
     {
         var choice = true;
         while (choice)
         {
-            Console.WriteLine("1. List all regions");
-            Console.WriteLine("2. List all countries");
-            Console.WriteLine("3. List all locations");
+            Console.WriteLine("1. Regions");
+            Console.WriteLine("2. Countries");
+            Console.WriteLine("3. Locations");
             Console.WriteLine("4. List all Departments");
             Console.WriteLine("5. List all Job");
             Console.WriteLine("6. List all Job History");
@@ -49,45 +53,34 @@ public class Program
         switch (input)
         {
             case "1":
-                region = new Region();
-                var regions = region.GetAll();
-                GeneralMenu.List(regions, "regions");
+                RegionMenu();
                 break;
             case "2":
-                country = new Country();
-                var countries = country.GetAll();
-                GeneralMenu.List(countries, "countries");
+                CountryMenu();
                 break;
             case "3":
-                location = new Location();
-                var locations = location.GetAll();
-                GeneralMenu.List(locations, "locations");
+                LocationMenu();
                 break;
             case "4":
                 department = new Department();
                 var departments = department.GetAll();
-                GeneralMenu.List(departments, "departments");
                 break;
             case "5":
                 job = new Job();
                 var jobs = job.GetAll();
-                GeneralMenu.List(jobs, "jobs");
                 break;
             case "6":
                 jobHistory = new JobHistory();
                 var jobHistories = jobHistory.GetAll();
-                GeneralMenu.List(jobHistories, "jobHistories");
                 break;
             case "7":
                 employee = new Employee();
                 var employees = employee.GetAll();
-                GeneralMenu.List(employees, "employees");
                 break;
             case "8":
                 var region2 = new Region();
                 string input2 = Console.ReadLine();
                 var result = region2.GetAll().Where(r => r.Name.Contains(input2)).ToList();
-                GeneralMenu.List(result, "regions");
                 break;
             case "9":
                 var country3 = new Country();
@@ -125,7 +118,6 @@ public class Program
                                                      RegionName = rc.r.Name,
                                                      City = l.City
                                                  }).ToList();
-                GeneralMenu.List(resultJoin2, "regions and countries");
                 break;
 
             case "10":
@@ -169,7 +161,6 @@ public class Program
                                                      CountryName = rcld.rcl.rc.c.Name,
                                                      RegionName = rcld.rcl.rc.r.Name
                                                  }).ToList();
-                GeneralMenu.List(resultEmployeeDetail, "Detail Data Employee");
 
                 break;
             case "11":
@@ -192,7 +183,6 @@ public class Program
                                                       MaxSalary = g.Max(e => e.Salary),
                                                       AvgSalary = g.Average(e => e.Salary)
                                                   }).ToList();
-                GeneralMenu.List(resultEmployeeInDepartment, "Total Employee In Department");
 
                 /*  var resultEmployeeInDepartment2 = getDepartment.Join(getEmployee, 
                                                                       d => d.Id, 
@@ -218,5 +208,167 @@ public class Program
                 break;
         }
         return true;
+
     }
+
+    public static void RegionMenu()
+    {
+        var region = new Region();
+        var regionView = new RegionView();
+
+        var regionController = new RegionController(region, regionView);
+
+        var isLoop = true;
+        while (isLoop)
+        {
+            Console.WriteLine("1. List all regions");
+            Console.WriteLine("2. Insert new region");
+            Console.WriteLine("3. Update region");
+            Console.WriteLine("4. Delete region");
+            Console.WriteLine("5. Back");
+            Console.Write("Enter your choice: ");
+            var input2 = Console.ReadLine();
+            switch (input2)
+            {
+                case "1":
+                    regionController.GetAll();
+                    break;
+                case "2":
+                    regionController.Insert();
+                    break;
+                case "3":
+                    regionController.Update();
+                    break;                
+                case "4":
+                    regionController.Delete();
+                    break;
+                case "5":
+                    isLoop = false;
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice");
+                    break;
+            }
+        }
+    }
+    public static void CountryMenu()
+    {
+        var country = new Country();
+        var countryView = new CountryView();
+
+        var countryController = new CountryController(country, countryView);
+
+        var isLoop = true;
+        while (isLoop)
+        {
+            Console.WriteLine("1. List all countries");
+            Console.WriteLine("2. Insert new country");
+            Console.WriteLine("3. Update country");
+            Console.WriteLine("4. Delete country");
+            Console.WriteLine("5. Back");
+            Console.Write("Enter your choice: ");
+            var input2 = Console.ReadLine();
+            switch (input2)
+            {
+                case "1":
+                    countryController.GetAll();
+                    break;
+                case "2":
+                    countryController.Insert();
+                    break;
+                case "3":
+                    countryController.Update();
+                    break;
+                case "4":
+                    countryController.Delete();
+                    break;
+                case "5":
+                    isLoop = false;
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice");
+                    break;
+            }
+        }
+    }
+    public static void LocationMenu()
+    {
+        var location = new Location();
+        var locationView = new LocationView();
+
+        var locationController = new LocationController(location, locationView);
+
+        var isLoop = true;
+        while (isLoop)
+        {
+            Console.WriteLine("1. List all locations");
+            Console.WriteLine("2. Insert new location");
+            Console.WriteLine("3. Update location");
+            Console.WriteLine("4. Delete location");
+            Console.WriteLine("5. Back");
+            Console.Write("Enter your choice: ");
+            var input2 = Console.ReadLine();
+            switch (input2)
+            {
+                case "1":
+                    locationController.GetAll();
+                    break;
+                case "2":
+                    locationController.Insert();
+                    break;
+                case "3":
+                    locationController.Update();
+                    break;
+                case "4":
+                    locationController.Delete();
+                    break;
+                case "5":
+                    isLoop = false;
+                    break;
+                default:
+                    Console.WriteLine("Invalid choice");
+                    break;
+            }
+        }
+    }
+    /*    public static void AllMenu<T>(T model, T view, T controller)
+        {
+            *//*var models = new T();
+            var regionView = new RegionView();
+
+            var controller = new RegionController(region, regionView);*//*
+
+            var isLoop = true;
+            while (isLoop)
+            {
+                Console.WriteLine("1. List all regions");
+                Console.WriteLine("2. Insert new region");
+                Console.WriteLine("3. Update region");
+                Console.WriteLine("4. Delete region");
+                Console.WriteLine("10. Back");
+                Console.Write("Enter your choice: ");
+                var input2 = Console.ReadLine();
+                switch (input2)
+                {
+                    case "1":
+                        controller.GetAll();
+                        break;
+                    case "2":
+                        regionController.Insert();
+                        break;
+                    case "3":
+                        regionController.Update();
+                        break;
+                    case "4":
+                        regionController.Delete();
+                        break;
+                    case "10":
+                        isLoop = false;
+                        break;
+                    default:
+                        Console.WriteLine("Invalid choice");
+                        break;
+                }
+}
+}*/
 }

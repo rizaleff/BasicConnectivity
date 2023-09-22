@@ -5,30 +5,39 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
+using System.Globalization;
 
-namespace BasicConnectivity
+namespace BasicConnectivity.Model
 {
-    internal class Department
+    public class Employee
     {
         public int Id { get; set; }
-        public string Name { get; set; }    
-        public int ManagerId {  get; set; }
-        public int LocationId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
+        public DateTime HireDate { get; set; }
+        public int JobId { get; set; }
+        public double Salary { get; set; }
+        public double? ComissionPct { get; set; }
 
+        public int DepartmentId { get; set; }
+        public int? ManagerId { get; set; }
 
         public override string ToString()
         {
-            return $"{Id} - {Name} - {ManagerId} - {LocationId}";
+            return $"{Id} - {FirstName} - {LastName} - {Email} - {PhoneNumber} - {HireDate.ToString("dd/MM/yyyy")} - {JobId} - {Salary} - {ComissionPct} - {DepartmentId} - {ManagerId}";
         }
-        public List<Department> GetAll()
+        public List<Employee> GetAll()
         {
-            var departments = new List<Department>();
+            var employees = new List<Employee>();
 
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM tbl_departments";
+            command.CommandText = "SELECT * FROM tbl_employees";
 
             try
             {
@@ -40,39 +49,47 @@ namespace BasicConnectivity
                 {
                     while (reader.Read())
                     {
-                        departments.Add(new Department
+
+                        employees.Add(new Employee
                         {
                             Id = reader.GetInt32(0),
-                            Name = reader.GetString(1),
-                            ManagerId = reader.GetInt32(2),
-                            LocationId = reader.GetInt32(3)
+                            FirstName = reader.GetString(1),
+                            LastName = reader.GetString(2),
+                            Email = reader.GetString(3),
+                            PhoneNumber = reader.GetString(4),
+                            HireDate = reader.GetDateTime(5),
+                            JobId = reader.GetInt32(6),
+                            Salary = reader.GetDouble(7),
+                            ComissionPct = reader.GetDouble(8),
+                            DepartmentId = reader.GetInt32(9),
+                            ManagerId = reader.IsDBNull(10) ? 0 : reader.GetInt32(10)
                         });
                     }
                     reader.Close();
                     connection.Close();
 
-                    return departments;
+                    return employees;
                 }
                 reader.Close();
                 connection.Close();
 
-                return new List<Department>();
+                return new List<Employee>();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
 
-            return new List<Department>();
+            return new List<Employee>();
         }
-        public Department GetById(int id)
+        public Employee GetById(int id)
         {
-            Department department = new Department();
+            Employee employee = new Employee();
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM tbl_departments WHERE id = @id";
+            command.CommandText = "SELECT * FROM tbl_employees WHERE id = @id";
 
             try
             {
@@ -89,40 +106,53 @@ namespace BasicConnectivity
                 {
                     while (reader.Read())
                     {
-                        department.Id = reader.GetInt32(0);
-                        department.Name = reader.GetString(1);
-                        department.ManagerId = reader.GetInt32(2);
-                        department.LocationId = reader.GetInt32(3);
+                        employee.Id = reader.GetInt32(0);
+                        employee.FirstName = reader.GetString(1);
+                        employee.LastName = reader.GetString(2);
+                        employee.Email = reader.GetString(3);
+                        employee.PhoneNumber = reader.GetString(4);
+                        employee.HireDate = reader.GetDateTime(5);
+                        employee.JobId = reader.GetInt32(6);
+                        employee.Salary = reader.GetFloat(7);
+                        employee.ComissionPct = reader.GetFloat(8);
+                        employee.DepartmentId = reader.GetInt32(9);
+                        employee.ManagerId = reader.GetInt32(10);
                     }
                     reader.Close();
                     connection.Close();
-                    return department;
+                    return employee;
                 }
                 reader.Close();
                 connection.Close();
-                return new Department();
+                return new Employee();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-            return new Department();
+            return new Employee();
         }
 
-        public string Insert(int id, string name, int managerId, int locationId)
+        public string Insert(int id, string firstName, string lastName, string email, string phoneNumber, DateTime hireDate, int jobId, float salary, float comissionPct, int departmentId, int managerId)
         {
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "INSERT INTO tbl_departments VALUES (@id, @name, @manager_id)";
+            command.CommandText = "INSERT INTO tbl_employees VALUES (@id, @first_name, @last_name, @email, @phone_number, @hire_date, @job_id, @salary, @comission_pct, @department_id, @manager_id)";
 
             try
             {
                 command.Parameters.Add(new SqlParameter("@id", id));
-                command.Parameters.Add(new SqlParameter("@name", name));
+                command.Parameters.Add(new SqlParameter("@first_name", firstName));
+                command.Parameters.Add(new SqlParameter("@last_name", lastName));
+                command.Parameters.Add(new SqlParameter("@email", email));
+                command.Parameters.Add(new SqlParameter("@phone_number", phoneNumber));
+                command.Parameters.Add(new SqlParameter("@hire_date", hireDate));
+                command.Parameters.Add(new SqlParameter("@job_id", jobId));
+                command.Parameters.Add(new SqlParameter("@salary", salary));
+                command.Parameters.Add(new SqlParameter("@comission_pct", comissionPct));
                 command.Parameters.Add(new SqlParameter("@manager_id", managerId));
-                command.Parameters.Add(new SqlParameter("@location_id", locationId));
 
                 connection.Open();
                 using var transaction = connection.BeginTransaction();
@@ -150,20 +180,27 @@ namespace BasicConnectivity
             }
         }
 
-        public string Update(int id, string name, int managerId, int locationId)
+        public string Update(int id, string firstName, string lastName, string email, string phoneNumber, DateTime hireDate, int jobId, float salary, float comissionPct, int departmentId, int managerId)
         {
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "UPDATE tbl_departments SET name = @name, manager_id = @manager_id, location_id=@location_id WHERE id = @id";
+            command.CommandText = "UPDATE tbl_employees SET first_name = @first_name, last_name = @last_name, email = @email, phone_number = @phone_number, hire_date = @hire_date, job_id = @job_id, salary = @salary, comission_pct = @comission_pct, department_id = @department_id, manager_id = @manager_id,  WHERE id = @id";
 
             try
             {
                 command.Parameters.Add(new SqlParameter("@id", id));
-                command.Parameters.Add(new SqlParameter("@name", name));
-                command.Parameters.Add(new SqlParameter("@manager_id", managerId));
-                command.Parameters.Add(new SqlParameter("@location_id", locationId));
+                command.Parameters.Add(new SqlParameter("@first_name", firstName));
+                command.Parameters.Add(new SqlParameter("@last_name", lastName));
+                command.Parameters.Add(new SqlParameter("@email", email));
+                command.Parameters.Add(new SqlParameter("@phone_number", phoneNumber));
+                command.Parameters.Add(new SqlParameter("@hire_date", hireDate));
+                command.Parameters.Add(new SqlParameter("@job_id", jobId));
+                command.Parameters.Add(new SqlParameter("@salary", salary));
+                command.Parameters.Add(new SqlParameter(" @comission_pct", comissionPct));
+                command.Parameters.Add(new SqlParameter(" @department_id", departmentId));
+                command.Parameters.Add(new SqlParameter(" @manager_id", managerId));
 
                 connection.Open();
                 using var transaction = connection.BeginTransaction();
@@ -198,7 +235,7 @@ namespace BasicConnectivity
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "DELETE FROM tbl_departments WHERE id = @id";
+            command.CommandText = "DELETE FROM tbl_employees WHERE id = @id";
 
             try
             {

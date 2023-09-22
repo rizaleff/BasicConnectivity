@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BasicConnectivity
+namespace BasicConnectivity.ViewModel
 {
     internal class RegionAndCountryVM
     {

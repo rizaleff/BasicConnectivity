@@ -7,30 +7,29 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace BasicConnectivity
+namespace BasicConnectivity.Model
 {
-    internal class Location
+    public class Job
     {
         public int Id { get; set; }
-        public string StreetAddress { get; set; }
-        public string PostalCode { get; set; }
-        public string StateProvince { get; set; }
-        public string City { get; set; }
-        public int CountryId { get; set; }
+        public string Title { get; set; }
+        public int MinSalary { get; set; }
+        public int MaxSalary { get; set; }
+
 
         public override string ToString()
         {
-            return $"{Id} - {StreetAddress} - {PostalCode} - {StateProvince} - {City} - {CountryId}";
+            return $"{Id} - {Title} - {MinSalary} - {MaxSalary}";
         }
-        public List<Location> GetAll()
+        public List<Job> GetAll()
         {
-            var locations = new List<Location>();
+            var jobs = new List<Job>();
 
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM tbl_locations";
+            command.CommandText = "SELECT * FROM tbl_jobs";
 
             try
             {
@@ -42,41 +41,39 @@ namespace BasicConnectivity
                 {
                     while (reader.Read())
                     {
-                        locations.Add(new Location
+                        jobs.Add(new Job
                         {
                             Id = reader.GetInt32(0),
-                            StreetAddress = reader.GetString(1),
-                            PostalCode = reader.GetString(2),
-                            StateProvince = reader.GetString(3),
-                            City = reader.GetString(4),
-                            CountryId = reader.GetInt32(5)
-                        }); ;
+                            Title = reader.GetString(1),
+                            MinSalary = reader.GetInt32(2),
+                            MaxSalary = reader.GetInt32(3)
+                        });
                     }
                     reader.Close();
                     connection.Close();
 
-                    return locations;
+                    return jobs;
                 }
                 reader.Close();
                 connection.Close();
 
-                return new List<Location>();
+                return new List<Job>();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
 
-            return new List<Location>();
+            return new List<Job>();
         }
-        public Location GetById(int id)
+        public Job GetById(int id)
         {
-            Location location = new Location();
+            Job job = new Job();
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "SELECT * FROM tbl_locations WHERE id = @id";
+            command.CommandText = "SELECT * FROM tbl_jobs WHERE id = @id";
 
             try
             {
@@ -93,45 +90,40 @@ namespace BasicConnectivity
                 {
                     while (reader.Read())
                     {
-                        location.Id = reader.GetInt32(0);
-                        location.StreetAddress = reader.GetString(1);
-                        location.PostalCode = reader.GetString(2);
-                        location.StateProvince = reader.GetString(3);
-                        location.City = reader.GetString(4);
-                        location.CountryId = reader.GetInt32(5);
+                        job.Id = reader.GetInt32(0);
+                        job.Title = reader.GetString(1);
+                        job.MinSalary = reader.GetInt32(2);
+                        job.MaxSalary = reader.GetInt32(3);
                     }
                     reader.Close();
                     connection.Close();
-                    return location;
+                    return job;
                 }
                 reader.Close();
                 connection.Close();
-                return new Location();
+                return new Job();
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error: {ex.Message}");
             }
-            return new Location();
+            return new Job();
         }
 
-        public string Insert(int id, string streetAddress, string postalCode, string stateProvince, string city, int countryId)
+        public string Insert(int id, string title, int minSalary, int maxSalary)
         {
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "INSERT INTO tbl_locations VALUES (@id, @street_address, @postal_code, @state_province, @city, @country_id)";
+            command.CommandText = "INSERT INTO tbl_jobs VALUES (@id, @title, @min_salary, @max_salary)";
 
             try
             {
                 command.Parameters.Add(new SqlParameter("@id", id));
-                command.Parameters.Add(new SqlParameter("@street_address", streetAddress));
-                command.Parameters.Add(new SqlParameter("@postal_code", postalCode));
-                command.Parameters.Add(new SqlParameter("@state_province", stateProvince));
-                command.Parameters.Add(new SqlParameter("@city", city));
-                command.Parameters.Add(new SqlParameter("@country_id", countryId));
-
+                command.Parameters.Add(new SqlParameter("@title", title));
+                command.Parameters.Add(new SqlParameter(" @min_salary", minSalary));
+                command.Parameters.Add(new SqlParameter(" @min_salary", maxSalary));
 
 
                 connection.Open();
@@ -160,22 +152,20 @@ namespace BasicConnectivity
             }
         }
 
-        public string Update(int id, string streetAddress, string postalCode, string stateProvince, string city, int countryId)
+        public string Update(int id, string title, int minSalary, int maxSalary)
         {
             using var connection = Provider.GetConnection();
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "UPDATE tbl_locations SET id=@id, street_address=@street_address, postal_code=@postal_code, state_province=@state_province, city=@city, country_id=@country_id WHERE id = @id";
+            command.CommandText = "UPDATE tbl_jobs SET id=@id, title=@title, min_salary=@min_salary, max_salary=@max_salary WHERE id = @id";
 
             try
             {
                 command.Parameters.Add(new SqlParameter("@id", id));
-                command.Parameters.Add(new SqlParameter("@street_address", streetAddress));
-                command.Parameters.Add(new SqlParameter("@postal_code", postalCode));
-                command.Parameters.Add(new SqlParameter("@state_province", stateProvince));
-                command.Parameters.Add(new SqlParameter("@city", city));
-                command.Parameters.Add(new SqlParameter("@country_id", countryId));
+                command.Parameters.Add(new SqlParameter("@title", title));
+                command.Parameters.Add(new SqlParameter(" @min_salary", minSalary));
+                command.Parameters.Add(new SqlParameter(" @min_salary", maxSalary));
 
                 connection.Open();
                 using var transaction = connection.BeginTransaction();
@@ -210,7 +200,7 @@ namespace BasicConnectivity
             using var command = Provider.GetCommand();
 
             command.Connection = connection;
-            command.CommandText = "DELETE FROM tbl_locations WHERE id = @id";
+            command.CommandText = "DELETE FROM tbl_jobs WHERE id = @id";
 
             try
             {
@@ -245,5 +235,8 @@ namespace BasicConnectivity
                 return $"Error: {ex.Message}";
             }
         }
+
+
+
     }
 }

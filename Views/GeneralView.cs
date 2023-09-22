@@ -4,11 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BasicConnectivity
+namespace BasicConnectivity.View
 {
-    internal class GeneralMenu
+    public class GeneralView
     {
-        public static void List<T>(List<T> items, string title)
+        public void List<T>(List<T> items, string title)
         {
             Console.WriteLine($"List of {title}");
             Console.WriteLine("---------------");
@@ -17,14 +17,14 @@ namespace BasicConnectivity
                 Console.WriteLine(item.ToString());
             }
         }
-        public static void Single<T>(T item, string title)
+        public void Single<T>(T item, string title)
         {
             Console.WriteLine($"List of {title}");
             Console.WriteLine("---------------");
             Console.WriteLine(item.ToString());
         }
 
-        public static void Transaction(string result)
+        public void Transaction(string result)
         {
             int.TryParse(result, out int res);
             if (res > 0)
